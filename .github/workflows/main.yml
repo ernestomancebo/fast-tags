@@ -4,11 +4,10 @@ on: [ push ]
 
 env:
   PY_VERSION: "3.10.10"
-  JOB_RUNNER_OS: "ubuntu-22.04"
 
 jobs:
   integration:
-    runs-on: "${{ env.JOB_RUNNER_OS }}"
+    runs-on: ubuntu-22.04
 
     steps:
       # Code Checkout
@@ -52,7 +51,7 @@ jobs:
         if: ${{ always() }}
 
   delivery:
-    runs-on: "${{ env.JOB_RUNNER_OS }}"
+    runs-on: ubuntu-22.04
     needs: integration
     if: github.ref_name == 'main'
 
