@@ -1,10 +1,6 @@
-name: Fast Tags
-
-on:
-  push:
-    branches: [ main/master ]
-  pull_request:
-    branches: [ main/master ]
+name: Fast-Tags
+run-name: Push by @${{ github.actor }}
+on: [ push ]
 
 jobs:
   integration:
