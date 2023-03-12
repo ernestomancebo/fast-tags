@@ -1,17 +1,15 @@
-# Pull base image
+FROM python:3.10-alpine
 
-FROM python:3.10
+RUN mkdir /app
 
-# Set environment varibles
+WORKDIR /app
 
+COPY requirements.txt .
 
-WORKDIR /code/
+RUN pip install --upgrade pip  \
+    && pip install pip-tools  \
+    && pip-sync requirements.txt
 
-# Install dependencies
-RUN pip install pipenv
-COPY Pipfile Pipfile.lock /code/
-RUN pipenv install --system --dev
+COPY . .
 
-COPY . /code/
-
-EXPOSE 8000
+CMD ["uvicorn", "api.main:app", "--host=0.0.0.0", "--port=80"]
