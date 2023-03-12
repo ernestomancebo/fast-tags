@@ -41,11 +41,11 @@ jobs:
         continue-on-error: true
 
       - name: Test with PyTest
-        run: pytest tests --doctest-modules --junitxml=junit/test-results-${{ env.PY_VERSION }}.xml
+        run: pytest tests --doctest-modules --junitxml=junit/test-results-${{ github.ref_name }}.xml
 
       - name: Upload pytest test results
         uses: actions/upload-artifact@v3
         with:
-          name: test-results-${{ env.PY_VERSION }}.xml
-          path: junit/test-results-${{ env.PY_VERSION }}.xml
+          name: test-results-${{ github.ref_name }}.xml
+          path: junit/test-results-${{ github.ref_name }}.xml
         if: ${{ always() }}
