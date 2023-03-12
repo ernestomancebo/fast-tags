@@ -37,7 +37,7 @@ jobs:
 
       - name: Lint code with Flake8
         run: |
-          flake8  ./api/ schemas.py
+          flake8 --ignore=E402 ./api/ schemas.py
         continue-on-error: true
 
       - name: Test with PyTest
