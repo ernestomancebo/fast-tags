@@ -1,5 +1,5 @@
 name: Fast-Tags
-run-name: Push @${{ github.ref_name }} by @${{ github.actor }}
+run-name: Run \#${{ github.run_number }} for ${{ github.ref_name }} by @${{ github.actor }}
 on: [ push ]
 
 env:
