@@ -1,6 +1,9 @@
 name: Fast-Tags
-run-name: Push by @${{ github.actor }}
+run-name: Push @${{ github.ref_name }} by @${{ github.actor }}
 on: [ push ]
+
+env:
+  PY_VERSION: 3.10
 
 jobs:
   integration:
@@ -14,7 +17,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           # Python version X processor architecture
-          python-version: "3.10"
+          python-version: $PY_VERSION
           architecture: "x64"
           cache: "pip"
 
@@ -38,11 +41,11 @@ jobs:
         continue-on-error: true
 
       - name: Test with PyTest
-        run: pytest tests --doctest-modules --junitxml=junit/test-results-${{python-version}}.xml
+        run: pytest tests --doctest-modules --junitxml=junit/test-results-$PY_VERSION.xml
 
       - name: Upload pytest test results
         uses: actions/upload-artifact@v3
         with:
-          name: test-results-${{python-version}}.xml
-          path: junit/test-results-${{python-version}}.xml
+          name: test-results-$PY_VERSION.xml
+          path: junit/test-results-$PY_VERSION.xml
         if: ${{ always() }}
