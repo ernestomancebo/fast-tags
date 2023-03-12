@@ -8,7 +8,7 @@ env:
 
 jobs:
   integration:
-    runs-on: ${{ JOB_RUNNER_OS }}
+    runs-on: ${{ env.JOB_RUNNER_OS }}
 
     steps:
       # Code Checkout
@@ -52,7 +52,7 @@ jobs:
         if: ${{ always() }}
 
   delivery:
-    runs-on: ${{ JOB_RUNNER_OS }}
+    runs-on: ${{ env.JOB_RUNNER_OS }}
     needs: integration
     if: github.ref_name == 'main'
 
