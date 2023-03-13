@@ -12,4 +12,8 @@ RUN pip install --upgrade pip  \
 
 COPY . .
 
-CMD ["uvicorn", "api.main:app", "--host=0.0.0.0", "--port=80"]
+RUN chmod u+x ./scripts/run.sh
+
+EXPOSE 80
+
+CMD [ "./scripts/run.sh" ]

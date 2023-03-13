@@ -68,7 +68,8 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ghcr.io/${{ secrets.DOCKER_HUB_TOKEN }}/fast-tags
+            ${{ secrets.DOCKER_HUB_USER }}/fast-tags
+            ghcr.io/${{ secrets.DOCKER_HUB_USER }}/fast-tags
           # generate Docker tags based on the following events/attributes
           tags: |
             type=schedule
