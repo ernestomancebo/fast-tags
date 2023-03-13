@@ -56,9 +56,6 @@ jobs:
     if: github.ref_name == 'main'
 
     steps:
-      - name: Runs only on Main
-        run: echo "Running on ${{ github.ref_name }}"
-
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -69,7 +66,6 @@ jobs:
           # list of Docker images to use as base name for tags
           images: |
             ${{ vars.DOCKER_HUB_USER }}/fast-tags
-            ghcr.io/${{ vars.DOCKER_HUB_USER }}/fast-tags
           # generate Docker tags based on the following events/attributes
           tags: |
             type=schedule
