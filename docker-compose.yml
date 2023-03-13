@@ -3,10 +3,23 @@ version: '3.9'
 services:
   database:
     image: "postgres:14-alpine"
-    container_name: fast_tags_api
+    container_name: fast_tags_db
     ports:
       - "${POSTGRES_DB_PORT}:5432"
     volumes:
       - ./db-data/:/var/lib/postgresql/data
     env_file:
       - .env
+
+  api:
+    image: "ernesmancebo/fast-tags"
+    container_name: fast_tags_api
+    restart: on-failure:5
+    ports:
+      - "${APP_UVICORN_PORT}:8080"
+    env_file:
+      - .env
+    links:
+      - database
+    depends_on:
+      - database

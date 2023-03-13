@@ -1,17 +1,19 @@
-# Pull base image
+FROM python:3.10-alpine
 
-FROM python:3.10
+RUN mkdir /app
 
-# Set environment varibles
+WORKDIR /app
 
+COPY requirements.txt .
 
-WORKDIR /code/
+RUN pip install --upgrade pip  \
+    && pip install pip-tools  \
+    && pip-sync requirements.txt
 
-# Install dependencies
-RUN pip install pipenv
-COPY Pipfile Pipfile.lock /code/
-RUN pipenv install --system --dev
+COPY . .
 
-COPY . /code/
+RUN chmod u+x ./scripts/run.sh
 
-EXPOSE 8000
+EXPOSE 80
+
+CMD [ "./scripts/run.sh" ]
