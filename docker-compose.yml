@@ -12,7 +12,7 @@ services:
       - .env
 
   api:
-    image: "ernesmancebo/fast-tags"
+    image: "ernesmancebo/fast-tags:main"
     container_name: fast_tags_api
     restart: on-failure:5
     ports:
