@@ -50,7 +50,7 @@ jobs:
   delivery:
     runs-on: ubuntu-22.04
     needs: integration
-    if: github.ref_name == 'main'
+    if: github.ref_name == 'main' || startsWith(github.ref, 'refs/tags')
 
     steps:
       - name: Checkout
