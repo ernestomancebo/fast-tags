@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 # Tagged Link's section
@@ -12,7 +12,7 @@ class TaggedLinkCreate(TaggedLinkBase):
 
 
 class TaggedLink(TaggedLinkBase):
-    _id: int
+    id: int = Field(alias="_id")
     owner_id: int
 
     class Config:
@@ -29,7 +29,7 @@ class UserCreate(UserBase):
 
 
 class User(UserBase):
-    _id: int
+    id: int = Field(alias="_id")
     is_active: bool
     links: list[TaggedLink] = []
 

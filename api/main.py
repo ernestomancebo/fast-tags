@@ -1,6 +1,3 @@
-from os import environ
-
-import uvicorn
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
@@ -8,7 +5,7 @@ from sqlalchemy.orm import Session
 # Init environment before anything else!
 load_dotenv('.env')
 
-import schemas
+import api.schemas as schemas
 from api import service
 from api.database import session_local
 
@@ -39,7 +36,12 @@ def get_tagged_link_service():
         del t_service
 
 
-@app.post("/users/", response_model=schemas.User)
+@app.get("/ping")
+def ping():
+    return {"ping": "pong pong"}
+
+
+@app.post("/users/", response_model=schemas.User, status_code=201)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db),
                 user_service: service.UserService = Depends(get_user_service)):
     db_user = user_service.get_user_by_email(db, email=user.email)
@@ -48,14 +50,14 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db),
     return user_service.create_user(db=db, user=user)
 
 
-@app.get("/users/", response_model=list[schemas.User])
+@app.get("/users/", response_model=list[schemas.User], status_code=200)
 def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db),
                user_service: service.UserService = Depends(get_user_service)):
     users = user_service.get_users(db, skip=skip, limit=limit)
     return users
 
 
-@app.get("/users/{user_id}", response_model=schemas.User)
+@app.get("/users/{user_id}", response_model=schemas.User, status_code=200)
 def read_user(user_id: int, db: Session = Depends(get_db),
               user_service: service.UserService = Depends(get_user_service)):
     db_user = user_service.get_user(db, user_id=user_id)
@@ -64,7 +66,7 @@ def read_user(user_id: int, db: Session = Depends(get_db),
     return db_user
 
 
-@app.post("/users/{user_id}/links/", response_model=schemas.TaggedLink)
+@app.post("/users/{user_id}/links/", response_model=schemas.TaggedLink, status_code=201)
 def create_item_for_user(
         user_id: int, tagged_link: schemas.TaggedLinkCreate,
         db: Session = Depends(get_db),
@@ -76,7 +78,7 @@ def create_item_for_user(
                                 user_id=user_id)
 
 
-@app.get("/links/", response_model=list[schemas.TaggedLink])
+@app.get("/links/", response_model=list[schemas.TaggedLink], status_code=200)
 def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db),
                tagged_links_service: service.TaggedLinkService = Depends(
                    get_tagged_link_service)):
@@ -84,6 +86,6 @@ def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db),
     return items
 
 
-if __name__ == "__main__":
-    uvicorn.run(app, host='0.0.0.0', port=environ.get(
-        'APP_UVICORN_PORT', 9090))
+# if __name__ == "__main__":
+#     uvicorn.run(app, host='0.0.0.0', port=environ.get(
+#         'APP_UVICORN_PORT', 9090))

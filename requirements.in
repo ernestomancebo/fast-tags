@@ -1,6 +1,12 @@
-sqlalchemy
-fastapi
+sqlalchemy==2.0.4
+fastapi==0.92.0
 python-dotenv
-psycopg2-binary
+psycopg2-binary==2.9.5
 alembic
 uvicorn
+# Development dependencies
+pytest
+pytest-cov
+httpx
+flake8
+autopep8
