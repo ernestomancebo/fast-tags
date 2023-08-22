@@ -11,6 +11,15 @@ class TaggedLinkCreate(TaggedLinkBase):
     pass
 
 
+class TaggedLinkUpdate(BaseModel):
+    id: int = Field(alias="_id")
+    tags: list[str]
+
+
+class BaseDelete(BaseModel):
+    deleted: bool
+
+
 class TaggedLink(TaggedLinkBase):
     id: int = Field(alias="_id")
     owner_id: int

@@ -5,9 +5,9 @@ from sqlalchemy.orm import Session
 # Init environment before anything else!
 load_dotenv('.env')
 
-import api.schemas as schemas
 from api import service
 from api.database import session_local
+import api.schemas as schemas
 
 app = FastAPI()
 
@@ -77,6 +77,30 @@ def create_item_for_user(
         create_user_tagged_link(db=db, tagged_link=tagged_link,
                                 user_id=user_id)
 
+
+@app.put("/links/{link_id}", response_model=schemas.TaggedLink, status_code=200)
+def update_item(link_id: int, tagged_link: schemas.TaggedLinkUpdate,
+                db: Session = Depends(get_db),
+                tagged_links_service: service.TaggedLinkService = Depends(
+                    get_tagged_link_service)):
+    db_tagged_link = tagged_links_service.update_user_tagged_link(db=db,
+                                                                  tagged_link=tagged_link)
+    if db_tagged_link is None:
+        raise HTTPException(status_code=404, detail="Tagged link not found")
+    return db_tagged_link
+
+
+@app.delete("/links/{link_id}", status_code=204)
+def delete_item(link_id: int, db: Session = Depends(get_db),
+                tagged_links_service: service.TaggedLinkService = Depends(
+                    get_tagged_link_service)):
+    db_tagged_link = tagged_links_service.delete_user_tagged_link(db=db,
+                                                                  tagged_link_id=link_id)
+    if not db_tagged_link:
+        raise HTTPException(status_code=404, detail="Tagged link not found")
+    
+    # 204 is OK + No Content
+    return
 
 @app.get("/links/", response_model=list[schemas.TaggedLink], status_code=200)
 def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db),

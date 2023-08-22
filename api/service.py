@@ -42,6 +42,9 @@ class TaggedLinkService:
     def get_tagged_links(self, db: Session, skip: int = 0, limit: int = 100):
         return db.query(models.TaggedLink).offset(skip).limit(limit).all()
 
+    def get_tagged_link_by_id(self, db: Session, tagged_link_id: int):
+        return db.query(models.TaggedLink).get(models.TaggedLink._id == tagged_link_id)
+
     def create_user_tagged_link(self, db: Session,
                                 tagged_link: schemas.TaggedLinkCreate,
                                 user_id: int):
@@ -52,3 +55,24 @@ class TaggedLinkService:
         db.refresh(db_tagged_link)
 
         return db_tagged_link
+
+    def update_user_tagged_link(self, db: Session,
+                                tagged_link: schemas.TaggedLinkUpdate):
+        db_tagged_link = db.query(models.TaggedLink).get(
+            models.TaggedLink._id == tagged_link._id)
+        if db_tagged_link is None:
+            return None
+
+        db_tagged_link.tags = tagged_link.tags
+        db.commit()
+        db.refresh(db_tagged_link)
+
+        return db_tagged_link
+
+    def delete_user_tagged_link(self, db: Session,
+                                tagged_link_id: int):
+        deleted_count = db.query(models.TaggedLink).filter(
+            models.TaggedLink._id == tagged_link_id).delete()
+        db.commit()
+
+        return bool(deleted_count)
