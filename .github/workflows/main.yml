@@ -24,28 +24,25 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pip-tools
-          if [ -f requirements.test.txt ]
-          then
-              pip-sync requirements.txt requirements.test.txt
-          else
-              pip-sync requirements.txt
-          fi
+          pip install -r requirements.txt
 
       - name: Lint code with Flake8
         run: |
-          flake8 ./api/ schemas.py
+          flake8 ./api/
         continue-on-error: true
 
+      # Test with PyTest, collect coverage, and upload to CodeCov
       - name: Test with PyTest
-        run: pytest tests --doctest-modules --junitxml=junit/test-results-${{ github.ref_name }}.xml
+        run: pytest tests --cov=api --cov-report=xml --cov-report=term-missing --junitxml=junit/test-results-${{ github.ref_name }}.xml
 
-      - name: Upload pytest test results
-        uses: actions/upload-artifact@v3
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2.1.0
         with:
-          name: test-results-${{ github.ref_name }}.xml
-          path: junit/test-results-${{ github.ref_name }}.xml
-        if: ${{ always() }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: true
 
   delivery:
     runs-on: ubuntu-22.04
