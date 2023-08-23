@@ -7,31 +7,70 @@
 alembic==1.10.0
     # via -r requirements.in
 anyio==3.6.2
-    # via starlette
-autopep8==2.0.1
+    # via
+    #   httpcore
+    #   starlette
+autopep8==2.0.2
     # via -r requirements.in
+certifi==2023.7.22
+    # via
+    #   httpcore
+    #   httpx
 click==8.1.3
     # via uvicorn
+coverage[toml]==7.3.0
+    # via pytest-cov
 fastapi==0.92.0
     # via -r requirements.in
+flake8==6.1.0
+    # via -r requirements.in
 h11==0.14.0
-    # via uvicorn
+    # via
+    #   httpcore
+    #   uvicorn
+httpcore==0.17.3
+    # via httpx
+httpx==0.24.1
+    # via -r requirements.in
 idna==3.4
-    # via anyio
+    # via
+    #   anyio
+    #   httpx
+iniconfig==2.0.0
+    # via pytest
 mako==1.2.4
     # via alembic
 markupsafe==2.1.2
     # via mako
+mccabe==0.7.0
+    # via flake8
+packaging==23.1
+    # via pytest
+pluggy==1.2.0
+    # via pytest
 psycopg2-binary==2.9.5
     # via -r requirements.in
-pycodestyle==2.10.0
-    # via autopep8
+pycodestyle==2.11.0
+    # via
+    #   autopep8
+    #   flake8
 pydantic==1.10.5
     # via fastapi
+pyflakes==3.1.0
+    # via flake8
+pytest==7.4.0
+    # via
+    #   -r requirements.in
+    #   pytest-cov
+pytest-cov==4.1.0
+    # via -r requirements.in
 python-dotenv==0.21.1
     # via -r requirements.in
 sniffio==1.3.0
-    # via anyio
+    # via
+    #   anyio
+    #   httpcore
+    #   httpx
 sqlalchemy==2.0.4
     # via
     #   -r requirements.in
