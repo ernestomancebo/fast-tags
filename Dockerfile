@@ -20,5 +20,8 @@ RUN set -eux \
     && pip install -r /usr/src/app/requirements.txt \
     && rm -rf /root/.cache/pip
 
+# Bootstrap OT
+RUN opentelemetry-bootstrap --action=install
+
 # copy project
 COPY . /usr/src/app/

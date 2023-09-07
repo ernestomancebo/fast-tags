@@ -4,6 +4,11 @@ python-dotenv
 psycopg2-binary==2.9.5
 alembic
 uvicorn
+# OpenTelemetry
+opentelemetry-distro
+opentelemetry-exporter-otlp
+opentelemetry-instrumentation-fastapi
+
 # Development dependencies
 pytest
 pytest-cov
