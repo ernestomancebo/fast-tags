@@ -1,13 +1,24 @@
+import logging
+import random
+
+import requests
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException
+from opentelemetry import trace
+from opentelemetry.trace.status import Status, StatusCode
 from sqlalchemy.orm import Session
 
 # Init environment before anything else!
 load_dotenv('.env')
 
+import api.schemas as schemas
 from api import service
 from api.database import session_local
-import api.schemas as schemas
+
+# Setup
+random.seed(42)
+logger= logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 app = FastAPI()
 
@@ -46,7 +57,15 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db),
                 user_service: service.UserService = Depends(get_user_service)):
     db_user = user_service.get_user_by_email(db, email=user.email)
     if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
+        logger.info(f"Email '{user.email}' already registered", exc_info=True)
+        exception = HTTPException(status_code=400, detail=f"Email '{user.email}' already registered")
+
+        span = trace.get_current_span()
+        span.record_exception(exception)
+        span.set_attributes({'est': True})
+        span.set_status(Status(StatusCode.ERROR, f"Email '{user.email}' already registered"))
+        
+        raise exception 
     return user_service.create_user(db=db, user=user)
 
 
@@ -60,9 +79,18 @@ def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db),
 @app.get("/users/{user_id}", response_model=schemas.User, status_code=200)
 def read_user(user_id: int, db: Session = Depends(get_db),
               user_service: service.UserService = Depends(get_user_service)):
+    logger.info(f"Reading user. ID: '{user_id}'", exc_info=True)
+
     db_user = user_service.get_user(db, user_id=user_id)
     if db_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
+        logger.info("User does not exists", exc_info=True)
+        exception = HTTPException(status_code=404, detail="User not found")
+
+        span = trace.get_current_span()
+        span.record_exception(exception)
+        span.set_attributes({'est': True})
+        span.set_status(Status(StatusCode.ERROR, "User does not exists"))
+        raise exception
     return db_user
 
 
@@ -109,6 +137,12 @@ def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db),
     items = tagged_links_service.get_tagged_links(db, skip=skip, limit=limit)
     return items
 
+@app.get("/external-api", status_code=200)
+def external_api():
+    seconds = random.uniform(0, 3)
+    response = requests.get(f"https://httpbin.org/delay/{seconds}")
+    response.close()
+    return {"message": "ok"}
 
 # if __name__ == "__main__":
 #     uvicorn.run(app, host='0.0.0.0', port=environ.get(
