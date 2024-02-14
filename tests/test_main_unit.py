@@ -34,9 +34,11 @@ def test_create_user(test_app, monkeypatch, default_user):
     assert response.json() == test_response_payload
 
 
-def test_create_user_existing_email(test_app, monkeypatch, default_user, default_user_email):
+def test_create_user_existing_email(test_app, monkeypatch, default_user,
+                                    default_user_email):
     test_request_payload = {"email": default_user_email, "password": "demo"}
-    test_response_payload = {"detail": "Email already registered"}
+    test_response_payload = {
+        "detail": f"Email '{default_user_email}' already registered"}
 
     def mock_post(self, db, email):
         return default_user
@@ -129,7 +131,8 @@ def test_create_link_no_url(test_app):
 
 
 def test_update_link(test_app, monkeypatch, default_tagged_link):
-    test_request_payload = {"_id": 1, "tags": ["search", "engine", "google"], "owner_id": 1 }
+    test_request_payload = {"_id": 1, "tags": [
+        "search", "engine", "google"], "owner_id": 1}
     test_response_payload = default_tagged_link.copy()
     test_response_payload["tags"] = test_request_payload["tags"]
 
